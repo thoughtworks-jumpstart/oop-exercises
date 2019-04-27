@@ -1,31 +1,33 @@
 const _findTotalNeighbouringBombs = new WeakMap();
+const _board = new WeakMap();
 
 class Cell {
   constructor(x, y, board) {
     this.xCoordinate = x;
     this.yCoordinate = y;
-    this.board = board;
     this.isBomb = false;
+    _board.set(this, board);
 
     _findTotalNeighbouringBombs.set(this, () => {
-      const north = this.board.getCell(this.xCoordinate, this.yCoordinate - 1);
-      const south = this.board.getCell(this.xCoordinate, this.yCoordinate + 1);
-      const east = this.board.getCell(this.xCoordinate + 1, this.yCoordinate);
-      const west = this.board.getCell(this.xCoordinate - 1, this.yCoordinate);
+      const board = _board.get(this);
+      const north = board.getCell(this.xCoordinate, this.yCoordinate - 1);
+      const south = board.getCell(this.xCoordinate, this.yCoordinate + 1);
+      const east = board.getCell(this.xCoordinate + 1, this.yCoordinate);
+      const west = board.getCell(this.xCoordinate - 1, this.yCoordinate);
 
-      const northEast = this.board.getCell(
+      const northEast = board.getCell(
         this.xCoordinate + 1,
         this.yCoordinate - 1
       );
-      const northWest = this.board.getCell(
+      const northWest = board.getCell(
         this.xCoordinate - 1,
         this.yCoordinate - 1
       );
-      const southEast = this.board.getCell(
+      const southEast = board.getCell(
         this.xCoordinate + 1,
         this.yCoordinate + 1
       );
-      const southWest = this.board.getCell(
+      const southWest = board.getCell(
         this.xCoordinate - 1,
         this.yCoordinate + 1
       );

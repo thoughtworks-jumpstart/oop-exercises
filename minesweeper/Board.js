@@ -1,24 +1,30 @@
 const Cell = require("./Cell");
 
+const _height = new WeakMap();
+const _width = new WeakMap();
+const _createArray = new WeakMap();
+
 class Board {
   constructor(height, width) {
-    this.height = height;
-    this.width = width;
-    this.board = this.createArray(height, width);
-  }
+    _height.set(this, height);
+    _width.set(this, width);
 
-  createArray(height, width) {
-    return [...Array(height)].map(
-      (element, yIndex) =>
-        (element = [...Array(width)].map(
-          (element, xIndex) => new Cell(xIndex, yIndex, this)
-        ))
-    );
+    _createArray.set(this, () => {
+      return [...Array(_height.get(this))].map(
+        (element, yIndex) =>
+          (element = [...Array(_width.get(this))].map(
+            (element, xIndex) => new Cell(xIndex, yIndex, this)
+          ))
+      );
+    });
+
+    this.board = _createArray.get(this)();
   }
 
   getCell(xCoordinate, yCoordinate) {
-    if (xCoordinate > this.width - 1 || xCoordinate < 0) return undefined;
-    if (yCoordinate > this.height - 1 || yCoordinate < 0) return undefined;
+    if (xCoordinate > _width.get(this) - 1 || xCoordinate < 0) return undefined;
+    if (yCoordinate > _height.get(this) - 1 || yCoordinate < 0)
+      return undefined;
     return this.board[yCoordinate][xCoordinate];
   }
 
